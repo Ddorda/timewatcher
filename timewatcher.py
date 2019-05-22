@@ -34,6 +34,13 @@ def wait_for_document_ready(driver):
         time.sleep(0.001)
 
 def fill_timewatch(driver):
+    config = get_config(CONFIG_PATH)
+    entrance_hour_hour, entrance_hour_minute = config['entrance_hour'].split(:)
+    leaving_hour_hour, leaving_hour_minute = config['leaving_hour'].split(:)
+
+    fill_form_script = "$('input#ehh0').val('%s');$('input#emm0').val('%s');$('input#xhh0').val('%s');$('input#xmm0').val('%s');$('input[type=image]').click()"
+    fill_form_script = fill_form_script % (entrance_hour_hour, entrance_hour_minute, leaving_hour_hour, leaving_hour_minute)
+
     has_day_name = True
     days_links_len = len(driver.find_elements_by_class_name('tr'))
     # Missing "Shem Yom" (day name)
@@ -55,7 +62,7 @@ def fill_timewatch(driver):
         # There's a glitch here, probably because of the window changing.
         # therefore we need to wait for document load manully.
         wait_for_document_ready(driver)
-        driver.execute_script("$('input#ehh0').val('11');$('input#emm0').val('00');$('input#xhh0').val('20');$('input#xmm0').val('00');$('input[type=image]').click()")
+        driver.execute_script(fill_form_script)
         driver.switch_to.window(driver.window_handles[-1])
 
 
@@ -71,12 +78,20 @@ def main():
 
     driver.close()
 
+def get_hour()
+
 def generate_config():
     company_id = raw_input("Please enter company id: ")
     user_id = raw_input("Please enter user id: ")
     password = raw_input("Please enter password (probably ID), notice will be stored plain-text: ")
+    entrance_hour = raw_input("Please enter your entrance hour. leave empty for default (11:00): ")
+    if not entrance_hour:
+        entrance_hour = '11:00'
+    leaving_hour = raw_input("Please enter your leaving hour. leave empty for default (20:00): ")
+    if not leaving_hour:
+        leaving_hour = '20:00'
 
-    config = {'company_id': company_id, 'user_id': user_id, 'password': password}
+    config = {'company_id': company_id, 'user_id': user_id, 'password': password, 'entrance_hour': entrance_hour, 'leaving_hour': leaving_hour}
     with open(CONFIG_PATH, 'w') as f:
         f.write(json.dumps(config))
 
