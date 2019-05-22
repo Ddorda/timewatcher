@@ -29,6 +29,9 @@ def login(driver):
     e = driver.find_element_by_name('B1')
     e.click()
 
+def wait_for_document_ready(driver):
+    while driver.execute_script('return document.readyState;') != 'complete':
+        time.sleep(0.001)
 
 def fill_timewatch(driver):
     has_day_name = True
@@ -49,6 +52,9 @@ def fill_timewatch(driver):
             continue
         link.click()
         driver.switch_to.window(driver.window_handles[-1])
+        # There's a glitch here, probably because of the window changing.
+        # therefore we need to wait for document load manully.
+        wait_for_document_ready(driver)
         driver.execute_script("$('input#ehh0').val('11');$('input#emm0').val('00');$('input#xhh0').val('20');$('input#xmm0').val('00');$('input[type=image]').click()")
         driver.switch_to.window(driver.window_handles[-1])
 
