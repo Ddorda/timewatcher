@@ -8,6 +8,8 @@ import json
 
 CONFIG_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.json')
 ABSENCE_CELL_NUMBER = -5
+DAY_TYPE_NUMBER = 1
+FREE_DAYS = [u'שישי', u'שבת', u'ערב חג', u'חג']
 
 
 def get_config(config_path):
@@ -29,11 +31,18 @@ def login(driver):
 
 
 def fill_timewatch(driver):
+    has_day_name = True
     days_links_len = len(driver.find_elements_by_class_name('tr'))
+    # Missing "Shem Yom" (day name)
+    if len(driver.find_elements_by_class_name('tr')[0].find_elements_by_css_selector('td')) == 13:
+        has_day_name = False
+
     for link_num in xrange(days_links_len):
         link = driver.find_elements_by_class_name('tr')[link_num]
         # pass weekends (or any other "Yom Menucha")
-        if u'יום מנוחה' in link.text:
+        if has_day_name and u'יום מנוחה' in link.text:
+            continue
+        elif has_day_name == False and link.find_elements_by_css_selector('td')[DAY_TYPE_NUMBER].text.strip() in FREE_DAYS:
             continue
         # pass days that have excuse for absence pre-filled (usually holidays)
         if link.find_elements_by_css_selector('td')[ABSENCE_CELL_NUMBER].text.strip():
