@@ -5,6 +5,7 @@ from selenium import webdriver
 import sys
 import os
 import json
+import time
 
 CONFIG_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.json')
 ABSENCE_CELL_NUMBER = -5
@@ -35,8 +36,8 @@ def wait_for_document_ready(driver):
 
 def fill_timewatch(driver):
     config = get_config(CONFIG_PATH)
-    entrance_hour_hour, entrance_hour_minute = config['entrance_hour'].split(:)
-    leaving_hour_hour, leaving_hour_minute = config['leaving_hour'].split(:)
+    entrance_hour_hour, entrance_hour_minute = config['entrance_hour'].split(':')
+    leaving_hour_hour, leaving_hour_minute = config['leaving_hour'].split(':')
 
     fill_form_script = "$('input#ehh0').val('%s');$('input#emm0').val('%s');$('input#xhh0').val('%s');$('input#xmm0').val('%s');$('input[type=image]').click()"
     fill_form_script = fill_form_script % (entrance_hour_hour, entrance_hour_minute, leaving_hour_hour, leaving_hour_minute)
@@ -78,7 +79,6 @@ def main():
 
     driver.close()
 
-def get_hour()
 
 def generate_config():
     company_id = raw_input("Please enter company id: ")
